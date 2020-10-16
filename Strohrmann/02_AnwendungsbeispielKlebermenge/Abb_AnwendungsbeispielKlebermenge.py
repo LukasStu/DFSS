@@ -10,14 +10,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import skew
 from scipy.io import loadmat
-from IPython import get_ipython
-get_ipython().run_line_magic('matplotlib', 'inline')
-
 
 """Einlesen und Umsortieren der Daten aus dem .mat-file"""
 data = loadmat('Klebermenge')['data']
-X = np.array(data).reshape(data.shape[0]*data.shape[1])
+#X = np.array(data).reshape(data.shape[0]*data.shape[1])
+X = np.array(data).reshape(-1)
 
+#print(data.shape)
+#print(X.shape)
 
 """Bestimmung Datenumfang"""
 X_min = np.amin(X)
