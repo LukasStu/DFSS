@@ -14,11 +14,12 @@ N = x.size
 
 # Std.-Abw. der Stichprobe
 s = np.std(x)
+ci = stats.chi2.interval(0.95,N-1, scale=s)
 
-ci = stats.chi2.interval(0.95,N, scale=s)
+# Kontrollrechnung
+c1 = stats.chi2.ppf((1-0.95)/2,N-1)
+c2 = stats.chi2.ppf((1+0.95)/2,N-1)
 
-c1 = stats.chi2.ppf((1-0.95)/2,N)
-c2 = stats.chi2.ppf((1+0.95)/2,N)
-
-ci2 = np.array([((N-1)*s**2)/c2,((N-1)*s**2)/c1])
+ci2 = np.array([((N-1)*np.square(s))/c2,((N-1)*np.square(s))/c1])
 ci2 = np.sqrt(ci2)
+

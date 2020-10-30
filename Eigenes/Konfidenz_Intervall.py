@@ -26,4 +26,4 @@ ci1 = stats.norm.interval(gamma, loc=U_quer, scale=sigma/np.sqrt(N))
 # 2)
 # Hier Varianz geschätzt (=Stichprobenvarianz), daraus Varianz des Stichprobenmittelwert
 s = np.sqrt(0.09)
-ci2 = stats.t.interval(gamma, N, loc=U_quer, scale=s/np.sqrt(N))
+ci2 = stats.t.interval(gamma, N-1, loc=U_quer, scale=s/np.sqrt(N))
