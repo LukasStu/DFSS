@@ -19,7 +19,7 @@ X = np.array(data).reshape(-1)
 
 N = X.size
 X_quer = np.mean(X)
-s_X_square = np.var(X)
+s_X_square = np.var(X,ddof=1)
 
 gamma = 0.95
 
