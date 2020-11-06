@@ -27,7 +27,6 @@ x = np.array(data).reshape(-1)
 x_quer = np.mean(x)
 s = np.std(x,ddof=1)
 N = x.size
-
 print(' ')
 print('Mittelwert x: ', x_quer)
 print('Standardabweichung s: ', s)
@@ -43,10 +42,10 @@ c1_99 = stats.t.ppf((1-gamma99)/2,N-1)
 c2_99 = stats.t.ppf((1+gamma99)/2,N-1)
 # 95% Konfidenzintervall
 mu_min_95 = x_quer-c2_95*s/np.sqrt(N)
-mu_max_95 = x_quer+c2_95*s/np.sqrt(N)
+mu_max_95 = x_quer-c1_95*s/np.sqrt(N)
 # 99% Konfidenzintervall
 mu_min_99 = x_quer-c2_99*s/np.sqrt(N)
-mu_max_99 = x_quer+c2_99*s/np.sqrt(N)
+mu_max_99 = x_quer-c1_99*s/np.sqrt(N)
 
 print(' ')
 print('Untere Grenze für Mittelwert \u03bc, 95%:', mu_min_95)

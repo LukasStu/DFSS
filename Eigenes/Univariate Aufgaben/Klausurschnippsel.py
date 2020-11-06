@@ -23,6 +23,14 @@ from scipy.io import loadmat # Für mat-Dateien
 data = loadmat('<Dateiname>')['data']
 X = np.array(data).reshape(-1)
 
+x_quer = np.mean(x)
+s = np.std(x,ddof=1)
+N = x.size
+
+print(' ')
+print('Mittelwert x: ', x_quer)
+print('Standardabweichung s: ', s)
+
 
 " Histogramme"
 test=np.array([1,2,2,3,3,3,4,4,4,4])
