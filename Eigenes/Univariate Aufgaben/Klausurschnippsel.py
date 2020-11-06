@@ -2,9 +2,16 @@
 """
 Created on Wed Oct 28 17:13:09 2020
 
-@author: LStue
+@author: Lukas Stürmlinger Matrikel-Nummer:
 """
 
+"""  Initialisierung: Variablen löschen, KOnsole leeren """    
+try:
+    from IPython import get_ipython
+    get_ipython().magic('clear')
+    get_ipython().magic('reset -f')
+except:
+    pass
 """ Bibliotheken importieren"""
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,7 +24,7 @@ data = loadmat('<Dateiname>')['data']
 X = np.array(data).reshape(-1)
 
 
-# Histogramme
+" Histogramme"
 test=np.array([1,2,2,3,3,3,4,4,4,4])
 #absolute Häufigkeit
 fig1, ax1 = plt.subplots()
