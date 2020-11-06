@@ -29,6 +29,8 @@ x1_quer = np.mean(x1)
 x2_quer = np.mean(x2)
 s1 = np.std(x1,ddof=1)
 s2 = np.std(x2,ddof=1)
+# Anmerkung: s1² und s2² sind chi²-verteilt. Die Summe ist ebenfalls
+# chi²-verteilt, mit Summe der Freiheitsgrade: N-1+M-1 = N+M-2
 s_gesamt = np.sqrt((s1**2*(N-1)+s2**2*(M-1))/(N+M-2))
 
 print(' ')
