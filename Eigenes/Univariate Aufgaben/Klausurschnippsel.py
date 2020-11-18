@@ -37,9 +37,15 @@ test=np.array([1,2,2,3,3,3,4,4,4,4])
 #absolute Häufigkeit
 fig1, ax1 = plt.subplots()
 ax1.hist(test)
+ax.set_xlabel(r'')
+ax.set_ylabel(r'Absolute Häufigkeit')
 # relative Häufigkeit
 fig2, ax2 = plt.subplots()
 ax2.hist(test, weights=np.zeros_like(test) + 1. / test.size)
+ax.set_xlabel(r'')
+ax.set_ylabel(r'Relative Häufigkeit')
 # Wahrscheinlichkeitsverteilung
 fig3, ax3 = plt.subplots()
 ax3.hist(test, density='true')
+ax.set_xlabel(r'')
+ax.set_ylabel(r'Wahrscheinlichkeit')
