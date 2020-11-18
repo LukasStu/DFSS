@@ -29,8 +29,7 @@ c2 = stats.norm.ppf(1-alpha/2)
 
 # Berechnung der Eingriffsgrenzen für x_quer
 x_quer_Annahme = np.array([mu_0+c1*sigma/np.sqrt(N),mu_0+c2*sigma/np.sqrt(N)])
-txt_b = "{:.4f} < x_quer <= {:.4f}"
-print(txt_b.format(x_quer_Annahme[0],x_quer_Annahme[1]))
+print("{:.4f} < x_quer <= {:.4f}".format(x_quer_Annahme[0],x_quer_Annahme[1]))
 
 # Gütefunktion für mu_1 != mu_0
 d_mu = np.linspace(-2, 2, num=10000)
