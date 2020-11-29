@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 from scipy import stats
 from scipy.io import loadmat # Für mat-Dateien
 
+
 """Einlesen und Umsortieren der Daten aus dem .mat-file"""
 data1 = loadmat('AbweichungenSoll')['Messung1']
 data2 = loadmat('AbweichungenSoll')['Messung2']
