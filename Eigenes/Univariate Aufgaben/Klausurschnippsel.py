@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Oct 28 17:13:09 2020
+Created on Fri Feb 19 14:00:00 2020
 
-@author: Lukas Stürmlinger Matrikel-Nummer:
+@author: Lukas Stürmlinger Matrikel-Nummer: 73343
 """
 
-"""  Initialisierung: Variablen löschen, KOnsole leeren """    
+"""  Initialisierung: Variablen löschen, Konsole leeren """    
 try:
     from IPython import get_ipython
     get_ipython().magic('clear')
@@ -14,9 +14,14 @@ except:
     pass
 """ Bibliotheken importieren"""
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib import cm
+from mpl_toolkits.mplot3d import Axes3D
 from scipy.stats import t, norm, chi2, f
 from scipy.io import loadmat # Für mat-Dateien
+import statsmodels.api as sm
+from statsmodels.formula.api import ols
 
 
 """Einlesen und Umsortieren der Daten aus dem .mat-file"""
@@ -84,3 +89,7 @@ ax.plot(d_mu,G,label='Gütefunktion')
 ax.set_xlabel(r'$\Delta \mu$')
 ax.set_ylabel(r'$1-\beta(\mu_1)$')
 ax.grid(True)
+
+""" Korrelationsanalyse """
+""" H_0: s_alpha² = 0 """
+""" H_0 = Es gibt keinen signifikaten Einfluss zwischen den Gruppen"""
