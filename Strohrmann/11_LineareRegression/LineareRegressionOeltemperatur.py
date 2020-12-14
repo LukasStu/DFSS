@@ -28,7 +28,8 @@ ax1.grid(True)
 """ Lineares Regressionsmodell definieren und berechnen """
 
 # model = ols("Spannung ~ Temperatur", regress).fit()
-model = ols("Spannung ~ Temperatur + I(Temperatur**2) + I(Temperatur**3)" , regress).fit()
+# model = ols("Spannung ~ Temperatur + I(Temperatur**2) + I(Temperatur**3)" , regress).fit()
+model = ols("Spannung ~ I(Temperatur**2) + I(Temperatur**3)" , regress).fit()
 print(model.summary())
 st, data, ss2 = summary_table(model, alpha=0.05)
 
