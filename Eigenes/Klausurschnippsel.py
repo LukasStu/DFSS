@@ -12,6 +12,7 @@ try:
     get_ipython().magic('reset -f')
 except:
     pass
+
 """ Bibliotheken importieren"""
 import numpy as np
 import pandas as pd
