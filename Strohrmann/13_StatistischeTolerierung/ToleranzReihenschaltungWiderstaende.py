@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import norm
 from scipy.stats import uniform
 
-""" Beerchnung der Toleranz einer Reihenschaltung von Widerständen """
+""" Berechnung der Toleranz einer Reihenschaltung von Widerständen """
 
 
 """ Widerstände mit Toleranzangabe """
@@ -154,7 +154,7 @@ ax1.grid(True)
 ax1.legend()
 
 
-""" Grafische Vergelcih der berechneten Toleranzen """
+""" Grafische Vergleich der berechneten Toleranzen """
 fig = plt.figure(4, figsize=(6, 4))
 fig.suptitle('')
 ax1 = fig.subplots(1,1)
