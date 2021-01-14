@@ -23,7 +23,7 @@ die  Mess-System-Analyse verwendet wird, Dataframe hat
 - wie jedes Dataframe einen Index, 
 - eine Teilnummer Part
 - einen Prüfer Appraiser 
-- die nummer der Messung und 
+- die Nummer der Messung und 
 - einen Messwert Value
 Vorteil des Datenformats Dataframe ist, dass die Variable auf für viele 
 unterschiedliche Aufgaben verwendet werden kann. Dazu muss der Gebrauch 
@@ -78,10 +78,11 @@ print(df2)
 print("Daten mit Appraiser B und Measurement 2")
 print(df2.loc['B',2,:])
 
-""" Dadurch lassen sich jeetzt eine Abfragen erstellen, zum Vergleich die 
-Auswahl von oben: Daten mit Appraiser B und Mesurment 2
+""" Dadurch lassen sich jetzt Abfragen erstellen. Zum Vergleich die 
+Auswahl von oben: Daten mit Appraiser B und Measurment 2
 """
 index = pd.MultiIndex.from_product([['A', 'B', 'C'],[1, 2],np.arange(1,11,1)])
+print(index)
 df3= pd.DataFrame(data["data"].reshape(-1, order='C'), index=index)
 df3.index.names = ['Appraiser','Measurement','Part']
 
@@ -91,12 +92,12 @@ print(df3)
 print("Daten mit Appraiser B und Measurement 2")
 print(df3.loc['B',2,:])
 
-""" Ausserdem können die Daten ausgewertet werden, dazu stehen 
-Funktionen Funktionen wie mean,sum, max zur Verfügung. Es muss 
-dabei angegeben, welcher Index erhalten bleiben soll.
+""" Außerdem können die Daten ausgewertet werden, dazu stehen 
+Funktionen wie mean, sum und max zur Verfügung. Es muss 
+dabei angegeben werden, welcher Index erhalten bleiben soll.
 """
 print()
-print("Mittelwert als Funtion der Teile")
+print("Mittelwert als Funktion der Teile")
 print(df3.mean(level=['Part']))
 print()
 print("Mittelwert als Funktion der Teile und der Messung")
@@ -107,6 +108,8 @@ print(df3.mean(level=['Measurement','Part']))
 print()
 print("Mittelwert für Prüfer A als Funtion der Teile")
 print(df3.loc['A',:,:].mean(level=['Part']))
+
+print(df3.reset_index())
 
 
 

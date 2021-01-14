@@ -81,7 +81,7 @@ fig1 = plt.figure(1, figsize=(6, 4))
 fig1.suptitle('')
 ax1 = fig1.subplots(1, 1)
 ax1.plot(np.arange(0, y_repeat_len)+1, y_repeat_test, 'bo-')
-ax1.plot(np.arange(0, y_repeat_len)+1, 5*np.ones(y_repeat_len), 'r')
+ax1.plot(np.arange(0, y_repeat_len)+1, Y_REPEAT_REFERENCE*np.ones(y_repeat_len), 'r')
 ax1.plot(np.arange(0, y_repeat_len)+1,
          (5+0.1*Y_TOLERANCE)*np.ones(y_repeat_len), 'g--')
 ax1.plot(np.arange(0, y_repeat_len)+1,
