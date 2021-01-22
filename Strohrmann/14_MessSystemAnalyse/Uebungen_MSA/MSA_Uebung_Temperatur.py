@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Jan 14 15:51:37 2021
 
-@author: LStue
+""" DFSS: Measurment System Analysis
+Example for validation of a measurment system according to MSA standard
+
+
+Update on mon Dec 21 2020
+@author: abka0001, stma0003
 """
-"""  Initialisierung: Variablen löschen, Konsole leeren """    
-try:
-    from IPython import get_ipython
-    get_ipython().magic('clear')
-    get_ipython().magic('reset -f')
-except:
-    pass
 
 from scipy import stats
-import scipy.io
+from scipy.io import loadmat
 import numpy as np
 import pandas as pd
 from statsmodels.formula.api import ols
@@ -56,69 +52,7 @@ def conf_pred_band_ex(_regress_ex, _poly, _model, alpha=0.05):
     lpred_ex = c_1*np.sqrt((1+np.diag(d))*_model.mse_resid)
 
     return lconf_ex, lpred_ex
-def loadmat(filename):
-    """Improved loadmat (replacement for scipy.io.loadmat)
-    Ensures correct loading of python dictionaries from mat files.
 
-    Inspired by: https://stackoverflow.com/a/29126361/572908
-    """
-
-    def _has_struct(elem):
-        """Determine if elem is an array
-        and if first array item is a struct
-        """
-        return isinstance(elem, np.ndarray) and (
-            elem.size > 0) and isinstance(
-            elem[0], scipy.io.matlab.mio5_params.mat_struct)
-
-    def _check_keys(d):
-        """checks if entries in dictionary are mat-objects. If yes
-        todict is called to change them to nested dictionaries
-        """
-        for key in d:
-            elem = d[key]
-            if isinstance(elem,
-                          scipy.io.matlab.mio5_params.mat_struct):
-                d[key] = _todict(elem)
-            elif _has_struct(elem):
-                d[key] = _tolist(elem)
-        return d
-
-    def _todict(matobj):
-        """A recursive function which constructs from
-        matobjects nested dictionaries
-        """
-        d = {}
-        for strg in matobj._fieldnames:
-            elem = matobj.__dict__[strg]
-            if isinstance(elem,
-                          scipy.io.matlab.mio5_params.mat_struct):
-                d[strg] = _todict(elem)
-            elif _has_struct(elem):
-                d[strg] = _tolist(elem)
-            else:
-                d[strg] = elem
-        return d
-
-    def _tolist(ndarray):
-        """A recursive function which constructs lists from cellarrays
-        (which are loaded as numpy ndarrays), recursing into the
-        elements if they contain matobjects.
-        """
-        elem_list = []
-        for sub_elem in ndarray:
-            if isinstance(sub_elem,
-                          scipy.io.matlab.mio5_params.mat_struct):
-                elem_list.append(_todict(sub_elem))
-            elif _has_struct(sub_elem):
-                elem_list.append(_tolist(sub_elem))
-            else:
-                elem_list.append(sub_elem)
-        return elem_list
-
-    data = scipy.io.loadmat(
-        filename, struct_as_record=False, squeeze_me=True)
-    return _check_keys(data)
 
 # Assesment of Resolution
 
@@ -132,29 +66,30 @@ if Y_RESOLUTION/Y_TOLERANCE <= 0.05:
     print("Auflösung ausreichend")
 else:
     print("Auflösung ist nicht ausreichend")
-    
-    
+
+
 # Systematic Deviation and Repeatability
 
 # Load data set and reference
-data = loadmat('MSATemperatur')
-y_repeat_test = data["Temperaturmessung"]["Verfahren1"]["data"]
-y_repeat_len = np.size(y_repeat_test)
 Y_REPEAT_REFERENCE = 18.3
+data = loadmat('TempVerfahren1')
+y_repeat_test = data["test"].reshape(-1)
+y_repeat_len = np.size(y_repeat_test)
 
 # Visualization
 fig1 = plt.figure(1, figsize=(6, 4))
 fig1.suptitle('')
 ax1 = fig1.subplots(1, 1)
 ax1.plot(np.arange(0, y_repeat_len)+1, y_repeat_test, 'bo-')
-ax1.plot(np.arange(0, y_repeat_len)+1, Y_REPEAT_REFERENCE*np.ones(y_repeat_len), 'r')
+ax1.plot(np.arange(0, y_repeat_len)+1,
+         Y_REPEAT_REFERENCE*np.ones(y_repeat_len), 'r')
 ax1.plot(np.arange(0, y_repeat_len)+1,
          (Y_REPEAT_REFERENCE+0.1*Y_TOLERANCE)*np.ones(y_repeat_len), 'g--')
 ax1.plot(np.arange(0, y_repeat_len)+1,
          (Y_REPEAT_REFERENCE-0.1*Y_TOLERANCE)*np.ones(y_repeat_len), 'g--')
-#ax1.axis([0, 26, 4.994, 5.006])
+ax1.axis([0, 51, 18.1, 18.5])
 ax1.set_xlabel('Messung')
-ax1.set_ylabel('Temperatur $T$ / $^\circ$C')
+ax1.set_ylabel('Temperatur $T$ / °C')
 ax1.set_title('Visualisierung der systematischen Messabweichung')
 ax1.grid(True)
 
@@ -170,7 +105,6 @@ if c_g >= 1.33:
     print("Wiederholbarkeit ausreichend")
 else:
     print("Wiederholbarkeit ist nicht ausreichend")
-    
 c_gk = (0.1*Y_TOLERANCE - np.abs(y_deviation))/3/np.std(y_repeat_test, ddof=1)
 print("")
 print("C_gk = ", round(c_gk, 3))
@@ -180,7 +114,7 @@ elif c_g >= 1.33:
     print("Systematische Abweichung zu groß")
 else:
     print("Auflösung und systematische Abweichung nicht ausreichend")
-    
+
 # Hypothesistest with H0: y_repeat_test = Y_REPEAT_REFERENCE
 hypo_test = stats.ttest_1samp(y_repeat_test, Y_REPEAT_REFERENCE)
 print("")
@@ -190,29 +124,47 @@ if hypo_test[1] <= 0.05:
     print("Abweichung signifikant")
 else:
     print("Abweichung nicht signifikant")
-    
 
-# Datensatz für Linearitätsuntersuchung
-y_linearity = pd.DataFrame({'reference': np.tile(np.reshape(data["Temperaturmessung"]["Verfahren4"]["ref"], -1),10),
-                            'deviation': np.reshape(data["Temperaturmessung"]["Verfahren4"]["data"], -1, order='C')})
-y_linearity['deviation'] = y_linearity['reference'] - y_linearity['deviation']
-y_linearity.sort_values(by=['reference'], inplace=True)
+# Confidence bounds für y_repeat_test
+GAMMA = 0.95
+c1 = stats.t.ppf((1-GAMMA)/2, y_repeat_len-1)
+c2 = stats.t.ppf((1+GAMMA)/2, y_repeat_len-1)
+y_repeat_min = np.mean(y_repeat_test) + c1*np.std(y_repeat_test, ddof=1)\
+    / np.sqrt(y_repeat_len)
+y_repeat_max = np.mean(y_repeat_test) + c2*np.std(y_repeat_test, ddof=1)\
+    / np.sqrt(y_repeat_len)
+print("")
+print("Konfidenzbereich: Untere Grenze = ", round(y_repeat_min, 4))
+print("Konfidenzbereich: Obere Grenze = ", round(y_repeat_max, 4))
+if (Y_REPEAT_REFERENCE >= y_repeat_min) & (Y_REPEAT_REFERENCE <= y_repeat_max):
+    print("Abweichung nicht signifikant")
+else:
+    print("Abweichung signifikant")
+
+
+# Linearity
+
+# Load data set and reference
+data = loadmat('TempVerfahren4')
+y_linearity = pd.DataFrame({'reference': np.repeat([10.7, 18.3,
+                                                    31.7, 44.0, 54.2], 10),
+                            'value': data["test"].reshape(-1, order='F')})
+y_linearity["deviation"] = y_linearity["value"] - y_linearity["reference"]
 
 # Visualization
 fig2 = plt.figure(2, figsize=(12, 4))
 fig2.suptitle('')
 ax1, ax2 = fig2.subplots(1, 2, gridspec_kw=dict(wspace=0.3))
 ax1.plot(y_linearity["reference"], y_linearity["deviation"], 'b+')
-#ax1.axis([0, 10, -0.004, 0.004])
-ax1.set_xlabel('Referenzwert')
-ax1.set_xlabel('Referenzwert $T$ / $^\circ$C')
-ax1.set_ylabel(r' Abweichung $\Delta T$ / $^\circ$C')
+ax1.axis([0, 60, -0.1, 0.1])
+ax1.set_xlabel('Referenzwert $T$ / °C')
+ax1.set_ylabel(r' Abweichung $\Delta T$ / °C')
 ax1.set_title('Bewertung des Konfidenzbereichs')
 ax1.grid(True)
 ax2.plot(y_linearity["reference"], y_linearity["deviation"], 'b+')
-#ax2.axis([0, 10, -0.004, 0.004])
-ax2.set_xlabel('Referenzwert $T$ / $^\circ$C')
-ax2.set_ylabel(r' Abweichung $\Delta T$ / $^\circ$C')
+ax2.axis([0, 60, -0.1, 0.1])
+ax2.set_xlabel('Referenzwert $T$ / °C')
+ax2.set_ylabel(r' Abweichung $\Delta T$ / °C')
 ax2.set_title('Mittelwerte zur Lineartätsbewertung')
 ax2.grid(True)
 
@@ -220,7 +172,7 @@ ax2.grid(True)
 poly = ols("deviation ~ reference", y_linearity)
 model = poly.fit()
 print(model.summary())
-y_plot = np.arange(1, 55, 1)
+y_plot = np.arange(10, 56, 1)
 y_regress = pd.DataFrame({"reference": np.reshape(y_plot, -1)})
 y_regress["deviation"] = model.predict(y_regress)
 ax1.plot(y_regress["reference"], y_regress["deviation"], 'r')
@@ -239,7 +191,7 @@ if (model.pvalues > 0.05).all(axis=None):
     print("Keine signifikante Abweichung zur Linearität")
 else:
     print("Signifikante Abweichung zur Linearität")
-    
+
 # Position of mean values for each reference
 ax2.plot(y_linearity.groupby("reference").aggregate('mean'), 'ro')
 ax2.plot(y_linearity["reference"],
@@ -253,106 +205,14 @@ if (np.abs(y_linearity.groupby("reference").aggregate("mean"))["deviation"]
     print("Keine individuelle Abweichung zur Linearität")
 else:
     print("Individuelle Abweichung zur Linearität")
-    
-    
-
-# Assessment of process variation according to prodedure 2
-
-# Load, format and evaluate data
-y_variation_2 = pd.DataFrame({'Part': np.tile(np.arange(0, 10, 1), 6),
-                              'Measurement': np.tile(np.repeat([1, 2], 10), 3),
-                              'Appraiser': np.repeat(['A', 'B', 'C'], 20),
-                              'Value': data["Temperaturmessung"]["Verfahren2"]["data"].T.reshape(-1)})
-Y_K = 10
-Y_J = 3
-Y_N = 2
-
-# Calculation of normalized squares sums making use of anova table
-model = ols('Value ~ C(Part) + C(Appraiser) + C(Part):C(Appraiser)',
-            data=y_variation_2).fit()
-anova2 = sm.stats.anova_lm(model, typ=2)
-anova2["M"] = anova2["sum_sq"]/anova2["df"]
-
-# estimations of variance and calculation of GRR and ndc
-equipment_variation = np.sqrt(anova2.loc["Residual", "M"])
-appraiser_variation = np.sqrt((anova2.loc["C(Appraiser)", "M"]
-                               - anova2.loc["C(Part):C(Appraiser)", "M"])
-                              / Y_K / Y_N)
-interaction_variation = np.sqrt((anova2.loc["C(Part):C(Appraiser)", "M"]
-                                 - anova2.loc["Residual", "M"])/Y_N)
-part_variation = np.sqrt((anova2.loc["C(Part)", "M"]
-                          - anova2.loc["Residual", "M"])/Y_J/Y_N)
-grr = np.sqrt(appraiser_variation**2 + interaction_variation**2
-              + equipment_variation**2)
-grr_relative = 6*grr/Y_TOLERANCE
-ndc = 1.41*part_variation/grr
-print("")
-print("")
-print("5. Streuverhalten: Verfahren 2")
-print("")
-print("Relativer GRR-Wert %GRR = ", round(grr_relative*100, 3), "%")
-print("Number of Distict Categories ndc = ", round(ndc, 3))
-
-# Visualization for each appraiser making use of multi index
-y_variation_2_multi\
-    = y_variation_2.set_index(['Appraiser', 'Measurement', 'Part'])
-fig4 = plt.figure(4, figsize=(12, 4))
-fig4.suptitle('')
-ax1, ax2, ax3 = fig4.subplots(1, 3, gridspec_kw=dict(wspace=0.3))
-ax1.plot(np.arange(1, Y_K+1, 1), y_variation_2_multi.loc['A', 1, :],
-         'b', label='Messung 1')
-ax1.plot(np.arange(1, Y_K+1, 1), y_variation_2_multi.loc['A', 2, :],
-         'r:', label='Messung 2')
-#ax1.axis([0, 11, 5.97, 6.04])
-ax1.set_xlabel('Stichprobe')
-ax1.set_ylabel('Durchmesser $D$ / mm')
-ax1.set_title('Prüfer A')
-ax1.grid(True)
-ax2.plot(np.arange(1, Y_K+1, 1), y_variation_2_multi.loc['B', 1, :],
-         'b', label='Messung 1')
-ax2.plot(np.arange(1, Y_K+1, 1), y_variation_2_multi.loc['B', 2, :],
-         'r:', label='Messung 2')
-#ax2.axis([0, 11, 5.97, 6.04])
-ax2.set_xlabel('Stichprobe')
-ax2.set_ylabel('Durchmesser $D$ / mm')
-ax2.set_title('Prüfer B')
-ax2.grid(True)
-ax3.plot(np.arange(1, Y_K+1, 1), y_variation_2_multi.loc['C', 1, :],
-         'b', label='Messung 1')
-ax3.plot(np.arange(1, Y_K+1, 1), y_variation_2_multi.loc['C', 2, :],
-         'r:', label='Messung 2')
-#ax3.axis([0, 11, 5.97, 6.04])
-ax3.set_xlabel('Stichprobe')
-ax3.set_ylabel('Durchmesser $D$ / mm')
-ax3.set_title('Prüfer C')
-ax3.grid(True)
-ax3.legend(loc=1, ncol=1)
-
-# Visualization of mean for each appraiser making use of multi index
-fig5 = plt.figure(5, figsize=(6, 4))
-fig5.suptitle('')
-ax1 = fig5.subplots(1, 1)
-ax1.plot(np.arange(1, Y_K+1, 1),
-         y_variation_2_multi.loc['A', :, :].mean(level=['Part']),
-         'b', label='Prüfer A')
-ax1.plot(np.arange(1, Y_K+1, 1),
-         y_variation_2_multi.loc['B', :, :].mean(level=['Part']),
-         'r:', label='Prüfer B')
-ax1.plot(np.arange(1, Y_K+1, 1),
-         y_variation_2_multi.loc['C', :, :].mean(level=['Part']),
-         'g--', label='Prüfer C')
-#ax1.axis([0, 11, 5.97, 6.04])
-ax1.set_xlabel('Stichprobe')
-ax1.set_ylabel('Durchmesser $D$ / mm')
-ax1.grid(True)
-ax1.legend(loc=9, ncol=3)
 
 
 # Long term stability
 
 # Load and evaluate data
-y_longterm = data["Temperaturmessung"]["Verfahren5"]["data"].T
-Y_LONGTERM_MU = 18.3
+data = loadmat('TempVerfahren5')
+y_longterm = data["test"].T
+Y_LONGTERM_MU = Y_REPEAT_REFERENCE
 Y_LONGTERM_SIG = 0.01
 y_longterm_mean = np.mean(y_longterm, axis=1)
 y_longterm_std = np.std(y_longterm, ddof=1, axis=1)
@@ -432,9 +292,9 @@ ax1.plot(np.arange(0, y_longterm.shape[0])+1,
          'g--', label='WG')
 ax1.plot(np.arange(0, y_longterm.shape[0])+1,
          y_longterm_mean_warn_2*np.ones(y_longterm.shape[0]), 'g--')
-#ax1.axis([0, 13, 5.997, 6.0045])
+ax1.axis([0, 21, 18.25, 18.35])
 ax1.set_xlabel('Stichprobe')
-ax1.set_ylabel(r'Mittelwert $\overline{T}$ / $^\circ$C')
+ax1.set_ylabel(r'Mittelwert $\overline{T}$ / °C')
 ax1.set_title('Kontrolle des Mittelwerts')
 ax1.grid(True)
 ax1.legend(loc=9, ncol=3)
@@ -449,9 +309,103 @@ ax2.plot(np.arange(0, y_longterm.shape[0])+1,
          y_longterm_sig_warn_1*np.ones(y_longterm.shape[0]), 'g--', label='WG')
 ax2.plot(np.arange(0, y_longterm.shape[0])+1,
          y_longterm_sig_warn_2*np.ones(y_longterm.shape[0]), 'g--')
-#ax2.axis([0, 13, 0, 0.004])
+ax2.axis([0, 21, 0, 0.03])
 ax2.set_xlabel('Stichprobe')
-ax2.set_ylabel('Standardabweichung s / $^\circ$C')
+ax2.set_ylabel('Standardabweichung s / °C')
 ax2.set_title('Kontrolle der Standardabweichung')
 ax2.grid(True)
 ax2.legend(loc=9, ncol=3)
+
+
+# Assessment of process variation according to prodedure 2
+
+# Load, format and evaluate data
+data = loadmat('TempVerfahren2')
+y_variation_2 = pd.DataFrame({'Part': np.tile(np.arange(0, 10, 1), 6),
+                              'Measurement': np.tile(np.repeat([1, 2], 10), 3),
+                              'Appraiser': np.repeat(['A', 'B', 'C'], 20),
+                              'Value': data["test"].reshape(-1, order='F')})
+Y_K = 10
+Y_J = 3
+Y_N = 2
+
+# Calculation of normalized squares sums making use of anova table
+model = ols('Value ~ C(Part) + C(Appraiser) + C(Part):C(Appraiser)',
+            data=y_variation_2).fit()
+anova2 = sm.stats.anova_lm(model, typ=2)
+anova2["M"] = anova2["sum_sq"]/anova2["df"]
+
+# estimations of variance and calculation of GRR and ndc
+equipment_variation = np.sqrt(anova2.loc["Residual", "M"])
+appraiser_variation = np.sqrt((anova2.loc["C(Appraiser)", "M"]
+                               - anova2.loc["C(Part):C(Appraiser)", "M"])
+                              / Y_K / Y_N)
+interaction_variation = np.sqrt((anova2.loc["C(Part):C(Appraiser)", "M"]
+                                 - anova2.loc["Residual", "M"])/Y_N)
+part_variation = np.sqrt((anova2.loc["C(Part)", "M"]
+                          - anova2.loc["Residual", "M"])/Y_J/Y_N)
+grr = np.sqrt(appraiser_variation**2 + interaction_variation**2
+              + equipment_variation**2)
+grr_relative = 6*grr/Y_TOLERANCE
+ndc = 1.41*part_variation/grr
+print("")
+print("")
+print("5. Streuverhalten: Verfahren 2")
+print("")
+print("Relativer GRR-Wert %GRR = ", round(grr_relative*100, 3), "%")
+print("Number of Distict Categories ndc = ", round(ndc, 3))
+
+# Visualization for each appraiser making use of multi index
+y_variation_2_multi\
+    = y_variation_2.set_index(['Appraiser', 'Measurement', 'Part'])
+fig4 = plt.figure(4, figsize=(12, 4))
+fig4.suptitle('')
+ax1, ax2, ax3 = fig4.subplots(1, 3, gridspec_kw=dict(wspace=0.3))
+ax1.plot(np.arange(1, Y_K+1, 1), y_variation_2_multi.loc['A', 1, :],
+         'b', label='Messung 1')
+ax1.plot(np.arange(1, Y_K+1, 1), y_variation_2_multi.loc['A', 2, :],
+         'r:', label='Messung 2')
+ax1.axis([0, 11, 19.35, 19.55])
+ax1.set_xlabel('Stichprobe')
+ax1.set_ylabel('Temperatur $T$ / °C')
+ax1.set_title('Prüfer A')
+ax1.grid(True)
+ax2.plot(np.arange(1, Y_K+1, 1), y_variation_2_multi.loc['B', 1, :],
+         'b', label='Messung 1')
+ax2.plot(np.arange(1, Y_K+1, 1), y_variation_2_multi.loc['B', 2, :],
+         'r:', label='Messung 2')
+ax2.axis([0, 11, 19.35, 19.55])
+ax2.set_xlabel('Stichprobe')
+ax2.set_ylabel('Temperatur $T$ / °C')
+ax2.set_title('Prüfer B')
+ax2.grid(True)
+ax3.plot(np.arange(1, Y_K+1, 1), y_variation_2_multi.loc['C', 1, :],
+         'b', label='Messung 1')
+ax3.plot(np.arange(1, Y_K+1, 1), y_variation_2_multi.loc['C', 2, :],
+         'r:', label='Messung 2')
+ax3.axis([0, 11, 19.35, 19.55])
+ax3.set_xlabel('Stichprobe')
+ax3.set_ylabel('Temperatur $T$ / °C')
+ax3.set_title('Prüfer C')
+ax3.grid(True)
+ax3.legend(loc=1, ncol=1)
+
+# Visualization of mean for each appraiser making use of multi index
+fig5 = plt.figure(5, figsize=(6, 4))
+fig5.suptitle('')
+ax1 = fig5.subplots(1, 1)
+ax1.plot(np.arange(1, Y_K+1, 1),
+         y_variation_2_multi.loc['A', :, :].mean(level=['Part']),
+         'b', label='Prüfer A')
+ax1.plot(np.arange(1, Y_K+1, 1),
+         y_variation_2_multi.loc['B', :, :].mean(level=['Part']),
+         'r:', label='Prüfer B')
+ax1.plot(np.arange(1, Y_K+1, 1),
+         y_variation_2_multi.loc['C', :, :].mean(level=['Part']),
+         'g--', label='Prüfer C')
+ax1.axis([0, 11, 19.35, 19.55])
+ax1.set_xlabel('Stichprobe')
+ax1.set_ylabel('Temperatur $T$ / °C')
+ax1.grid(True)
+ax1.legend(loc=9, ncol=3)
+
