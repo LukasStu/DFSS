@@ -19,6 +19,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
+from scipy import stats
 from scipy.stats import t, norm, chi2, f
 from scipy.io import loadmat # Für mat-Dateien
 import statsmodels.api as sm

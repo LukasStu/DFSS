@@ -146,10 +146,10 @@ Y_REPEAT_REFERENCE = 18.3
 fig1 = plt.figure(1, figsize=(6, 4))
 fig1.suptitle('')
 ax1 = fig1.subplots(1, 1)
-ax1.plot(np.arange(0, y_repeat_len)+1, y_repeat_test, 'bo-')
-ax1.plot(np.arange(0, y_repeat_len)+1, Y_REPEAT_REFERENCE*np.ones(y_repeat_len), 'r')
+ax1.plot(np.arange(0, y_repeat_len)+1, y_repeat_test, 'bo-',label="Messwerte")
+ax1.plot(np.arange(0, y_repeat_len)+1, Y_REPEAT_REFERENCE*np.ones(y_repeat_len), 'r', label="Referzenwert")
 ax1.plot(np.arange(0, y_repeat_len)+1,
-         (Y_REPEAT_REFERENCE+0.1*Y_TOLERANCE)*np.ones(y_repeat_len), 'g--')
+         (Y_REPEAT_REFERENCE+0.1*Y_TOLERANCE)*np.ones(y_repeat_len), 'g--', label="10%-Grenze")
 ax1.plot(np.arange(0, y_repeat_len)+1,
          (Y_REPEAT_REFERENCE-0.1*Y_TOLERANCE)*np.ones(y_repeat_len), 'g--')
 #ax1.axis([0, 26, 4.994, 5.006])
@@ -263,9 +263,9 @@ y_variation_2 = pd.DataFrame({'Part': np.tile(np.arange(0, 10, 1), 6),
                               'Measurement': np.tile(np.repeat([1, 2], 10), 3),
                               'Appraiser': np.repeat(['A', 'B', 'C'], 20),
                               'Value': data["Temperaturmessung"]["Verfahren2"]["data"].T.reshape(-1)})
-Y_K = 10
-Y_J = 3
-Y_N = 2
+Y_K = 10 # TODO: Enter number of objects
+Y_J = 3 # TODO: Enter number of appraisers
+Y_N = 2 # TODO: Enter number of measurements series
 
 # Calculation of normalized squares sums making use of anova table
 model = ols('Value ~ C(Part) + C(Appraiser) + C(Part):C(Appraiser)',
