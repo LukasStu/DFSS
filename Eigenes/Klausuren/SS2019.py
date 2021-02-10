@@ -76,17 +76,21 @@ G = t.cdf((delta_m_Annahme[0]+d_mu)/(np.sqrt(1/N+1/M)*s), N+M-2) + 1-t.cdf((delt
 index = np.min(np.where(G <= 0.99))
 print("Mit 99%-tiger Wahrscheinlichkeit wird eine Abweichung von {:.4f}Nm erkannt".format(d_mu[index]))
 
-
-
-
-"""c) Plausibilisieren Sie das Ergebnis des Hypothesentests
-mit einer geeigneten grafischen Darstellung."""
+# Kontrollplot
 fig, ax = plt.subplots()
 ax.plot(d_mu,G,label=r'$N=%d$'%N)
 ax.set_xlabel(r'$\Delta\,\overline{M}$/Nm')
 ax.set_ylabel(r'$1-\beta(\mu_1)$')
 ax.plot(d_mu[index],G[index],'r+')
 ax.grid(True)
+
+
+"""c) Plausibilisieren Sie das Ergebnis des Hypothesentests
+mit einer geeigneten grafischen Darstellung."""
+df_box = pd.DataFrame({'m1': m1,
+                       'm2': m2})
+fig2, ax2 = plt.subplots()
+df_box.boxplot(column=['m1', 'm2'])
 
 
 
