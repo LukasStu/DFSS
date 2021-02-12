@@ -343,7 +343,7 @@ appraiser_variation = np.sqrt((anova2.loc["C(Appraiser)", "M"]
 interaction_variation = np.sqrt((anova2.loc["C(Part):C(Appraiser)", "M"]
                                  - anova2.loc["Residual", "M"])/Y_N)
 part_variation = np.sqrt((anova2.loc["C(Part)", "M"]
-                          - anova2.loc["Residual", "M"])/Y_J/Y_N)
+                          - anova2.loc["C(Part):C(Appraiser)", "M"])/Y_J/Y_N)
 grr = np.sqrt(appraiser_variation**2 + interaction_variation**2
               + equipment_variation**2)
 grr_relative = 6*grr/Y_TOLERANCE

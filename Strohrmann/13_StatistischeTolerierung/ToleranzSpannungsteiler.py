@@ -15,6 +15,7 @@ from sympy.core import evalf
 from statsmodels.stats.outliers_influence import summary_table
 from statsmodels.formula.api import ols
 
+
 """ Berechnung der Toleranz eines Spannungsteilers """
 
 
@@ -48,7 +49,7 @@ ER2 = float(E_R2.evalf(subs=values))
 
 """ Definition der Widerstandsbereiche und ihrer Wahrscheinlichkeitsdichten """
 # Definition der gemeinsamen Auflösung im Spannungsbereich
-dU = 0.0001;
+dU = 0.0001
 
 # Widerstand R1 mit Normalverteilung
 UR1min = -0.1
@@ -66,8 +67,8 @@ f2 = norm.pdf(UR2,0,np.abs(ER2*sigR2))
 Urefmin = -0.1
 Urefmax = 0.1
 dUref = np.arange(Urefmin, Urefmax+dU, dU)
-dUrefmin = -0.025
-dUrefmax = 0.025
+dUrefmin = -TUref/2
+dUrefmax = TUref/2
 f3 = uniform.pdf(dUref,dUrefmin*EUref,(dUrefmax-dUrefmin)*EUref)
 
 
@@ -158,7 +159,7 @@ Urefsim = np.random.uniform(Uref0-TUref/2, Uref0+TUref/2, N)
 Usim = R2sim/(R1sim+R2sim)*Urefsim
 Umean = np.mean(Usim)
 Ustd = np.std(Usim,ddof=1)
-Uplot = np.arange(2.35,2.65,0.001);
+Uplot = np.arange(2.35,2.65,0.001)
 fsim = norm.pdf(Uplot,Umean,Ustd)
 Fsim = norm.cdf(Uplot,Umean,Ustd)
 
@@ -225,12 +226,16 @@ regress = pd.DataFrame({'R1': R1sim,
                         'U': Usim})
 model = ols("U ~ R1" , regress).fit()
 st, data, ss2 = summary_table(model, alpha=0.05)
-regress['Fit R1'] = data[:, 2]
-ER1sim = model.params['R1']
+regress['Fit R1'] = data[:, 2] # Regressionsgerade
+ER1sim = model.params['R1'] # Empfindlichkeit
 model = ols("U ~ R2" , regress).fit()
 st, data, ss2 = summary_table(model, alpha=0.05)
 regress['Fit R2'] = data[:, 2]
 ER2sim = model.params['R2']
+
+#model = ols("U ~ R1 + R2" , regress).fit()
+#ER1sim = model.params[R1]
+#ER2sim = model.params[R2]
 
 
 """ Grafische Darstellung der Empfindlichkeit """

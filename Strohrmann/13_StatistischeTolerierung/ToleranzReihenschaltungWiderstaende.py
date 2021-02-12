@@ -31,7 +31,7 @@ print('Toleranzbereich bei arithmetischer Tolerierung: ', round(TRAri,3))
 
 """ Definition der Widerstandsbereiche und ihrer Wahrscheinlichkeitsdichten """
 # Definition der gemeinsamen Auflösung
-dR = 0.01;
+dR = 0.01
 
 # Widerstand R1 mit Normalverteilung
 R1min = 950
@@ -98,9 +98,10 @@ R123 = R123[0:np.size(f123)]
 F123 = np.cumsum(f123)*dR
 F123 = F123/np.max(F123)
 
-# Berechnung der Toleranzgrenzen über Ausfallwahrscheinlichkeiten 
-indexmin = np.min(np.where(F123 >= (1-0.9973)/2))
-indexmax = np.max(np.where(F123 <= (1+0.9973)/2))
+# Berechnung der Toleranzgrenzen über Ausfallwahrscheinlichkeiten
+gamma = 0.9973 
+indexmin = np.min(np.where(F123 >= (1-gamma)/2))
+indexmax = np.max(np.where(F123 <= (1+gamma)/2))
 RmaxCon = R123[indexmax]
 RminCon = R123[indexmin]
 TRCon = RmaxCon -RminCon
@@ -129,7 +130,7 @@ ax2.grid(True)
 sigR2Indi = TR2/np.sqrt(12)
 sigR3Indi = TR3/np.sqrt(24)
 
-# Anwendung Grenzwertmethode
+# Anwendung Grenzwertmethode (hier +-3*sigma)
 RminSta = R10 + R20 + R30 - 3*np.sqrt(sigR1**2+sigR2Indi**2+sigR3Indi**2)
 RmaxSta = R10 + R20 + R30 + 3*np.sqrt(sigR1**2+sigR2Indi**2+sigR3Indi**2)
 TRSta = RmaxSta - RminSta

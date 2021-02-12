@@ -200,26 +200,18 @@ print("Anzahl von Eingangsgrößen nicht erfüllt.")
 
 # lineare Masskette: n_tol = e_uadc*uadc_tol + e_uoff*uoff_tol + e_na*na_tol
 N_RES = 1e-7
-
 n_uadc = np.arange(-0.002, 0.002+N_RES, N_RES)
 pdf_uadc = norm.pdf(n_uadc, 0, np.abs(e_uadc*uadc_sig))
-
 n_uoff = np.arange(-0.002, 0.002+N_RES, N_RES)
 pdf_uoff = stats.uniform.pdf(n_uadc, e_uoff*uoff_min, e_uoff*uoff_tol)
-
 n_uadc_uoff = np.arange(-0.004, 0.004+N_RES, N_RES)
 pdf_uadc_uoff = np.convolve(pdf_uadc, pdf_uoff)*N_RES
-
-
 n_na = np.arange(-0.002, 0.002+N_RES, N_RES)
 pdf_na = stats.uniform.pdf(n_na, e_na*na_min, e_na*na_tol)
-
 n_uadc_uoff_na = np.arange(-0.006, 0.006+N_RES, N_RES)
 pdf_uadc_uoff_na = np.convolve(pdf_uadc_uoff, pdf_na)*N_RES
-
 cdf_uadc_uoff_na = np.cumsum(pdf_uadc_uoff_na)*N_RES
 cdf_uadc_uoff_na = cdf_uadc_uoff_na / np.max(cdf_uadc_uoff_na)
-
 index_min = np.min(np.where(cdf_uadc_uoff_na >= (1-GAMMA)/2))
 index_max = np.min(np.where(cdf_uadc_uoff_na >= (1+GAMMA)/2))
 n_tol_con = n_uadc_uoff_na[index_max] - n_uadc_uoff_na[index_min]

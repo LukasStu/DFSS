@@ -81,7 +81,8 @@ fig1 = plt.figure(1, figsize=(6, 4))
 fig1.suptitle('')
 ax1 = fig1.subplots(1, 1)
 ax1.plot(np.arange(0, y_repeat_len)+1, y_repeat_test, 'bo-')
-ax1.plot(np.arange(0, y_repeat_len)+1, Y_REPEAT_REFERENCE*np.ones(y_repeat_len), 'r')
+ax1.plot(np.arange(0, y_repeat_len)+1, 
+         Y_REPEAT_REFERENCE*np.ones(y_repeat_len), 'r')
 ax1.plot(np.arange(0, y_repeat_len)+1,
          (5+0.1*Y_TOLERANCE)*np.ones(y_repeat_len), 'g--')
 ax1.plot(np.arange(0, y_repeat_len)+1,
@@ -154,7 +155,6 @@ fig2.suptitle('')
 ax1, ax2 = fig2.subplots(1, 2, gridspec_kw=dict(wspace=0.3))
 ax1.plot(y_linearity["reference"], y_linearity["deviation"], 'b+')
 ax1.axis([0, 10, -0.004, 0.004])
-ax1.set_xlabel('Referenzwert')
 ax1.set_xlabel('Referenzwert D / mm')
 ax1.set_ylabel(r' Abweichung $\Delta D$ / mm')
 ax1.set_title('Bewertung des Konfidenzbereichs')
@@ -341,7 +341,7 @@ appraiser_variation = np.sqrt((anova2.loc["C(Appraiser)", "M"]
 interaction_variation = np.sqrt((anova2.loc["C(Part):C(Appraiser)", "M"]
                                  - anova2.loc["Residual", "M"])/Y_N)
 part_variation = np.sqrt((anova2.loc["C(Part)", "M"]
-                          - anova2.loc["Residual", "M"])/Y_J/Y_N)
+                          - anova2.loc["C(Part):C(Appraiser)", "M"])/Y_J/Y_N)
 grr = np.sqrt(appraiser_variation**2 + interaction_variation**2
               + equipment_variation**2)
 grr_relative = 6*grr/Y_TOLERANCE
