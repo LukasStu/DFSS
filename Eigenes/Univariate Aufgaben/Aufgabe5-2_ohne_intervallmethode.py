@@ -57,16 +57,37 @@ ax1.set_ylabel(r'Anzahl der Proben')
 ax1.axvline(x=mu_min_95,color='r')
 ax1.axvline(x=mu_max_95,color='r')
 
-"b) Histogramm 1"
+"c) Histogramm 1"
 #absolute Häufigkeit
 # Wahrscheinlichkeitsverteilung
 fig2, ax2 = plt.subplots()
 ax2.hist(x, density='true',label='Wahrscheinlichkeitsverteilung')
 # Grundgesamtheit
-xaxes = np.linspace(312,347,1000)
+xaxes = np.linspace(280,350,10000)
 pdf = stats.norm.pdf(xaxes,loc=x_quer,scale=s)
 ax2.plot(xaxes,pdf,'r',label='Wahrscheinlichkeitsdichte')
 
 ax2.set_xlabel(r'Selbstentzündungstemperatur $\dfrac{\mathrm{T}}{C^{\circ}}$')
 ax2.set_ylabel(r'Wahrscheinlichkeit')
 ax2.legend()
+
+"d)95%-Progroseintervall"
+mu_prog_min = x_quer + c_mu[0]*s*np.sqrt(1+1/N)
+mu_prog_max = x_quer + c_mu[1]*s*np.sqrt(1+1/N)
+
+print('Untere Grenze für Prognose \u03bc, 95%:', mu_prog_min)
+print('Obere Grenze für Prognose \u03bc, 95%:', mu_prog_max)
+
+"d)Wahrscheinlichkeit, dass sich Papier unter 300°C entzündet"
+F = stats.norm.cdf(xaxes, loc=x_quer, scale=s)
+fig3, ax1 = plt.subplots()
+ax1.plot(xaxes,F)
+ax1.set_xlabel(r'Selbstentzündungstemperatur $\dfrac{\mathrm{T}}{C^{\circ}}$')
+ax1.set_ylabel(r'Wahrscheinlichkeit für Entzündung $\leq$ T')
+
+index = np.min(np.where(xaxes >= 300))
+print('Wahrscheinichkeit, dass Papier unter 300°C brennt: ',F[index]*10E6,'ppm')
+print('Wahrscheinichkeit, dass Papier unter 300°C nicht brennt: ',(1-F[index])*100,'%')
+
+ax1.plot(xaxes[index], F[index],'r+')
+
