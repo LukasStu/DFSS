@@ -176,6 +176,14 @@ mass_tol = 6*np.sqrt(b0_var
                      + 2*TZ_0 * b0b1_var
                      + 2*TZ_0**2 * b0b2_var
                      + 2*TZ_0**3 * b1b2_var)
+
+aa =  + 2*TZ_0 * b0b1_var + 2*TZ_0**2 * b0b2_var + 2*TZ_0**3 * b1b2_var
+bb = [b0_var,
+     TZ_0**2 * b1_var,
+     b1_0**2 * TZ_SIG**2,
+     TZ_0**4 * b2_var,
+     4*TZ_0**2 * b2_0**2*TZ_SIG**2]
+
 print("")
 print('Toleranz der Masse Tm =', round(mass_tol, 4))
 
