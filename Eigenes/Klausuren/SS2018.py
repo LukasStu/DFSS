@@ -231,9 +231,6 @@ tol = 6*np.sqrt(E_b0**2*var_b0 +
 print('Toleranz',tol)
 
 
-
-
-
 # df = pd.DataFrame({'cause': [E_b0**2*var_b0,
 #                              E_b1**2*var_b1,
 #                              E_b2**2*var_b2,

@@ -82,6 +82,7 @@ anova1 = sm.stats.anova_lm(model, typ=2)
 print("")
 print("Anova auf Abweichung mit p-value = ",
       round(float(anova1["PR(>F)"]["C(n)"]), 4))
+
 if anova1["PR(>F)"]["C(n)"] <= 0.05:
     print("Abweichung signifikant")
 else:
