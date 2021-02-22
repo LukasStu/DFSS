@@ -325,9 +325,9 @@ y_variation_2 = pd.DataFrame({'Part': np.tile(np.arange(0, 10, 1), 6),
                               'Measurement': np.tile(np.repeat([1, 2], 10), 3),
                               'Appraiser': np.repeat(['A', 'B', 'C'], 20),
                               'Value': data["test"].reshape(-1, order='F')})
-Y_K = 10
-Y_J = 3
-Y_N = 2
+Y_K = 10 # Teile
+Y_J = 3 # Prüfer
+Y_N = 2 # Messreihen
 
 # Calculation of normalized squares sums making use of anova table
 model = ols('Value ~ C(Part) + C(Appraiser) + C(Part):C(Appraiser)',
