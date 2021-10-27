@@ -91,22 +91,22 @@ N10 = np.size(data10)
 N20 = np.size(data20)
 
 
-# Wahrscheinlichkeitsverteilung
-fig2, (ax1, ax2) = plt.subplots(1,2)
-ax1.hist(data10, density='true')
-ax1.set_xlabel(r'c/ m/s bei 10°C')
-ax1.set_ylabel(r'Wahrscheinlichkeit')
-ax2.hist(data20, density='true')
-ax2.set_xlabel(r'c/ m/s bei 10°C')
-ax2.set_ylabel(r'Wahrscheinlichkeit')
+# # Wahrscheinlichkeitsverteilung
+fig2, (ax3, ax4) = plt.subplots(1,2)
+ax3.hist(data10, density='true')
+ax3.set_xlabel(r'c/ m/s bei 10°C')
+ax3.set_ylabel(r'Wahrscheinlichkeit')
+ax4.hist(data20, density='true')
+ax4.set_xlabel(r'c/ m/s bei 10°C')
+ax4.set_ylabel(r'Wahrscheinlichkeit')
 
-# Dichtefunktion plotten
+# # Dichtefunktion plotten
 xaxes10 = np.arange(min(data10), max(data10) ,1E-3)
 xaxes20 = np.arange(min(data20), max(data20) ,1E-3)
 f10 = norm.pdf(xaxes10, loc=c10_quer, scale=s_c10)
 f20 = norm.pdf(xaxes20, loc=c20_quer, scale=s_c20)
-ax1.plot(xaxes10, f10, 'r')
-ax2.plot(xaxes20, f20, 'r')
+ax3.plot(xaxes10, f10, 'r')
+ax4.plot(xaxes20, f20, 'r')
 
 
 """c) Konfidenzbereiche"""
@@ -197,10 +197,10 @@ b = model.params
 
 theta_plot = np.arange(0, 40, 0.01)
 cplot = b[0] + b[1]*theta_plot
-fig3, ax = plt.subplots(1,1)
-ax.plot(theta_plot, cplot)
-ax.set_xlabel(r'theta/°C')
-ax.set_ylabel(r'c/ m/s')
+fig3, ax5 = plt.subplots(1,1)
+ax5.plot(theta_plot, cplot)
+ax5.set_xlabel(r'theta/°C')
+ax5.set_ylabel(r'c/ m/s')
 
 """f) Konfidenzbereich signifikante Regressionskoeff"""
 st, data, ss2 = summary_table(model, alpha=0.05)
@@ -334,21 +334,21 @@ y_repeat_test = data.reshape(-1)
 y_repeat_len = np.size(y_repeat_test)
 
 # Visualization
-fig6 = plt.figure(1, figsize=(6, 4))
-fig6.suptitle('')
-ax = fig1.subplots(1, 1)
-ax.plot(np.arange(0, y_repeat_len)+1, y_repeat_test, 'bo-')
-ax.plot(np.arange(0, y_repeat_len)+1,
+fig4 = plt.figure(1, figsize=(6, 4))
+fig4.suptitle('')
+ax5 = fig4.subplots(1, 1)
+ax5.plot(np.arange(0, y_repeat_len)+1, y_repeat_test, 'bo-')
+ax5.plot(np.arange(0, y_repeat_len)+1,
          Y_REPEAT_REFERENCE*np.ones(y_repeat_len), 'r')
-ax.plot(np.arange(0, y_repeat_len)+1,
+ax5.plot(np.arange(0, y_repeat_len)+1,
          (Y_REPEAT_REFERENCE+0.1*Y_TOLERANCE)*np.ones(y_repeat_len), 'g--')
-ax.plot(np.arange(0, y_repeat_len)+1,
+ax5.plot(np.arange(0, y_repeat_len)+1,
          (Y_REPEAT_REFERENCE-0.1*Y_TOLERANCE)*np.ones(y_repeat_len), 'g--')
 #ax1.axis([0, 51, 18.1, 18.5])
-ax.set_xlabel('Messung')
-ax.set_ylabel('Temperatur $T$ / °C')
-ax.set_title('Visualisierung der systematischen Messabweichung')
-ax.grid(True)
+ax5.set_xlabel('Messung')
+ax5.set_ylabel('Temperatur $T$ / °C')
+ax5.set_title('Visualisierung der systematischen Messabweichung')
+ax5.grid(True)
 
 # Calculation of capability index
 y_deviation = np.mean(y_repeat_test) - Y_REPEAT_REFERENCE
@@ -388,21 +388,21 @@ y_linearity = pd.DataFrame({'reference': np.repeat([1.1, 1.3,
 y_linearity["deviation"] = y_linearity["value"] - y_linearity["reference"]
 
 # Visualization
-fig2 = plt.figure(2, figsize=(12, 4))
-fig2.suptitle('')
-ax1, ax2 = fig2.subplots(1, 2, gridspec_kw=dict(wspace=0.3))
-ax1.plot(y_linearity["reference"], y_linearity["deviation"], 'b+')
+fig5 = plt.figure(0, figsize=(12, 4))
+fig5.suptitle('')
+ax6, ax7 = fig5.subplots(1, 2, gridspec_kw=dict(wspace=0.3))
+ax6.plot(y_linearity["reference"], y_linearity["deviation"], 'b+')
 #ax1.axis([0, 60, -0.1, 0.1])
-ax1.set_xlabel('Referenzwert $T$ / °C')
-ax1.set_ylabel(r' Abweichung $\Delta T$ / °C')
-ax1.set_title('Bewertung des Konfidenzbereichs')
-ax1.grid(True)
-ax2.plot(y_linearity["reference"], y_linearity["deviation"], 'b+')
+ax6.set_xlabel('Referenzwert $T$ / °C')
+ax6.set_ylabel(r' Abweichung $\Delta T$ / °C')
+ax6.set_title('Bewertung des Konfidenzbereichs')
+ax6.grid(True)
+ax7.plot(y_linearity["reference"], y_linearity["deviation"], 'b+')
 #ax2.axis([0, 60, -0.1, 0.1])
-ax2.set_xlabel('Referenzwert $T$ / °C')
-ax2.set_ylabel(r' Abweichung $\Delta T$ / °C')
-ax2.set_title('Mittelwerte zur Lineartätsbewertung')
-ax2.grid(True)
+ax7.set_xlabel('Referenzwert $T$ / °C')
+ax7.set_ylabel(r' Abweichung $\Delta T$ / °C')
+ax7.set_title('Mittelwerte zur Lineartätsbewertung')
+ax7.grid(True)
 
 # Regression function with confidence bounds
 poly = ols("deviation ~ reference", y_linearity)
@@ -411,12 +411,12 @@ print(model.summary())
 y_plot = np.arange(0, 2, 1E-3)
 y_regress = pd.DataFrame({"reference": np.reshape(y_plot, -1)})
 y_regress["deviation"] = model.predict(y_regress)
-ax1.plot(y_regress["reference"], y_regress["deviation"], 'r')
+ax6.plot(y_regress["reference"], y_regress["deviation"], 'r')
 y_regress["confidence"], y_regress["prediction"] = \
     conf_pred_band_ex(y_regress, poly, model)
-ax1.plot(y_regress["reference"],
+ax6.plot(y_regress["reference"],
          y_regress["deviation"]+y_regress["confidence"], 'r:')
-ax1.plot(y_regress["reference"],
+ax6.plot(y_regress["reference"],
          y_regress["deviation"]-y_regress["confidence"], 'r:')
 print("")
 print("")
@@ -429,11 +429,11 @@ else:
     print("Signifikante Abweichung zur Linearität")
 
 # Position of mean values for each reference
-ax2.plot(y_linearity.groupby("reference").aggregate('mean'), 'ro')
-ax2.plot(y_linearity["reference"],
-         -np.ones(np.size(y_linearity["reference"]))*Y_TOLERANCE*0.05, 'g--')
-ax2.plot(y_linearity["reference"],
-         np.ones(np.size(y_linearity["reference"]))*Y_TOLERANCE*0.05, 'g--')
+ax7.plot(y_linearity.groupby("reference").aggregate('mean'), 'ro')
+ax7.plot(y_linearity["reference"],
+         -np.ones(np.size(y_linearity["reference"]))*Y_TOLERANCE*20, 'g--')
+ax7.plot(y_linearity["reference"],
+         np.ones(np.size(y_linearity["reference"]))*Y_TOLERANCE*20, 'g--')
 print("")
 print("Prüfung individueller Abweichungen")
 if (np.abs(y_linearity.groupby("reference").aggregate("mean"))["deviation"]
@@ -480,13 +480,13 @@ else:
 # # Visualization
 # y_variation_3_multi\
 #     = y_variation_3.set_index(['Measurement', 'Part'])
-# fig4 = plt.figure(4, figsize=(12, 4))
-# fig4.suptitle('')
-# ax1, ax2 = fig4.subplots(1, 2)
+# fig6 = plt.figure(4, figsize=(12, 4))
+# fig6.suptitle('')
+# ax1, ax2 = fig6.subplots(1, 2)
 # ax1.plot(np.arange(1, Y_K+1, 1), y_variation_3_multi.loc[1, :],
-#          'b', label='Messung 1')
+#           'b', label='Messung 1')
 # ax1.plot(np.arange(1, Y_K+1, 1), y_variation_3_multi.loc[2, :],
-#          'r:', label='Messung 2')
+#           'r:', label='Messung 2')
 # #ax1.axis([0, 26, 0.9, 1.1])
 # ax1.set_xlabel('Stichprobe')
 # ax1.set_ylabel(r'Höhe/m')
